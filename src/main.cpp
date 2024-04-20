@@ -75,7 +75,7 @@ void run(){
       name_to_index.insert({participant_name, participant_index});
       index_to_name.push_back(participant_name);
       adder.add_edge(source, participant_index, 1, 0);
-      preference_matrix[i] = std::vector<int>(trainer_count, INT16_MAX); // det default high = low preference
+      preference_matrix[i] = std::vector<int>(trainer_count, INT16_MAX); // set default high = low preference; preferences are given more importance
       for(int j = 1; j <= number_of_preferences; ++j){ 
         std::string preference_name;
         std::cin >> preference_name;
@@ -88,9 +88,9 @@ void run(){
     // handle no-go's
     for(int i = 0; i < number_of_nogos; ++i){
       std::string trainer_name, participant_name; std::cin >> trainer_name >> participant_name;
-      int participan_id = name_to_index[participant_name]-trainer_count; // für matrix
+      int participant_id = name_to_index[participant_name]-trainer_count; // für matrix
       int trainer_id = name_to_index[trainer_name];
-      preference_matrix[participan_id][trainer_id] = -1;
+      preference_matrix[participant_id][trainer_id] = -1;
     }
 
     // add participant -> trainer edges, capacity = 1, weight = preference score
@@ -106,7 +106,6 @@ void run(){
     std::vector<std::vector<int>> map(participant_count);
     int max_flow = boost::push_relabel_max_flow(G, source, sink);
     boost::successive_shortest_path_nonnegative_weights(G, source, sink);
-    boost::find_flow_cost(G);
     out_edge_it e, eend;
     if (max_flow == participant_count) {
       std::cout << "Allocation found!\n";
