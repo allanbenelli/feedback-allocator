@@ -44,94 +44,81 @@ class edge_adder {
 };
 
 void run(){
-    int l, tn, p, b; std::cin >> l >> tn >> p >> b;
-    graph G(l+tn);
+    int trainer_count, participant_count, number_of_preferences, b; std::cin >> trainer_count >> participant_count >> number_of_preferences >> b;
+    graph G(trainer_count+participant_count);
     edge_adder adder(G);
     auto c_map = boost::get(boost::edge_capacity, G);
-    //auto r_map = boost::get(boost::edge_reverse, G);
     auto rc_map = boost::get(boost::edge_residual_capacity, G);
 
     const v_desc source = boost::add_vertex(G);
     const v_desc sink = boost::add_vertex(G);
-    std::map<std::string, int> names; //leiter, dann tns
-    std::vector<std::string> rev_names; rev_names.reserve(l+tn);
-    std::vector<std::vector<int>> possible(tn);
-    int pers = tn+l;
+    std::map<std::string, int> name_to_index; //first trainers, than participants
+    std::vector<std::string> index_to_name; 
+    index_to_name.reserve(trainer_count+participant_count);
+    std::vector<std::vector<int>> preference_matrix(participant_count);
+    int total_count = participant_count+trainer_count;
 
-    for(int i = 0; i < l; ++i){
-      std::string l_name; int cap; std::cin >> l_name >> cap;
-      names.insert({l_name, i});
-      rev_names.push_back(l_name);
-      //std::cout << "from: " << i << " to " << sink << " cap: " << cap << " cost:" << 0 << "\n";
-
+    //add trainers vertices -> sink; cap == max number of feedbacks
+    for(int i = 0; i < trainer_count; ++i){
+      std::string trainer_name; int cap; std::cin >> trainer_name >> cap;
+      name_to_index.insert({trainer_name, i});
+      index_to_name.push_back(trainer_name);
       adder.add_edge(i, sink, cap, 0);
     }
 
-    for(int i = 0; i < tn; ++i){
-      std::string tn_name;
-      std::cin >> tn_name;
-      names.insert({tn_name, i+l});
-      rev_names.push_back(tn_name);
-      //std::cout << "from: " << source << " to " << i+l << " cap: " << "1" << " cost:" << 0 << "\n";
-
-      adder.add_edge(source, i+l, 1, 0);
-      possible[i] = std::vector<int>(l, p+1); // alle haben prio + 1
-      for(int j = 1; j <= p; ++j){ //fange mit prio 1 an
-        std::string p_name;
-        std::cin >> p_name;
-        if(p_name!="x"){
-          int leiter_id = names[p_name];
-          possible[i][leiter_id] = std::min(possible[i][leiter_id], j);
+    // read participant, add source -> participant
+    for(int i = 0; i < participant_count; ++i){
+      std::string participant_name;
+      std::cin >> participant_name;
+      int participant_index = i + trainer_count;
+      name_to_index.insert({participant_name, participant_index});
+      index_to_name.push_back(participant_name);
+      adder.add_edge(source, participant_index, 1, 0);
+      preference_matrix[i] = std::vector<int>(trainer_count, number_of_preferences+1); // default = lowest preference
+      for(int j = 1; j <= number_of_preferences; ++j){ 
+        std::string preference_name;
+        std::cin >> preference_name;
+        if(preference_name!="x"){
+          int trainer_id = name_to_index[preference_name];
+          preference_matrix[i][trainer_id] = std::min(preference_matrix[i][trainer_id], j); // update preference
         }
       }
     }
+    // handle no-go's
     for(int i = 0; i < b; ++i){
-      std::string l_name, tn_name; std::cin >> l_name >> tn_name;
-      int tn_id = names[tn_name]-l; // für matrix
-      int l_id = names[l_name];
-      //std::cout << "name: " << l_name << " " << tn_name << "\n";
-      possible[tn_id][l_id] = -1;
+      std::string trainer_name, participant_name; std::cin >> trainer_name >> participant_name;
+      int participan_id = name_to_index[participant_name]-trainer_count; // für matrix
+      int trainer_id = name_to_index[trainer_name];
+      preference_matrix[participan_id][trainer_id] = -1;
     }
-/*
-    for(int j = 0; j < l; ++j){
-      std::cout << rev_names[j] << "|";
-    }
-    std::cout << "\n";
-*/
-    for(int i = 0; i < tn; ++i){
-      for(int j = 0; j < l; ++j){
-        int prio = possible[i][j];
-        if(prio > 0){
-          adder.add_edge(l+i, j, 1, prio);
+
+    for(int i = 0; i < participant_count; ++i){
+      for(int j = 0; j < trainer_count; ++j){
+        int preference = preference_matrix[i][j];
+        if(preference > 0){
+          adder.add_edge(trainer_count+i, j, 1, preference);
         }
       }
     }
 
-    std::vector<std::vector<int>> map(tn);
-    int flow = boost::push_relabel_max_flow(G, source, sink);
+    std::vector<std::vector<int>> map(participant_count);
+    int max_flow = boost::push_relabel_max_flow(G, source, sink);
     boost::successive_shortest_path_nonnegative_weights(G, source, sink);
     boost::find_flow_cost(G);
-    //std::cout << "flow: " << flow << " flow: " << cost << "\n";
     out_edge_it e, eend;
-    if (flow == tn) {
-      std::cout << "optimale Lösung!\n";
+    if (max_flow == participant_count) {
+      std::cout << "Optimal solution found!\n";
     } else {
-      std::cout << "XXX - KEINE LÖSUNG! \n";
+      std::cout << "XXX - NO SOLUTION! \n";
     }
     std:: cout << "\n";
-    for(int i = 0; i < l; ++i){
-      std::cout << rev_names[i] << ": ";
+    for(int i = 0; i < trainer_count; ++i){
+      std::cout << index_to_name[i] << ": ";
       for(boost::tie(e, eend) = boost::out_edges(boost::vertex(i,G), G); e != eend; ++e) {
-          //int src =  boost::source(*e, G);
           int tar = boost::target(*e, G);
-          //std::cout << "from: " << src << " to " << tar << "\n";
           int flow = rc_map[*e] - c_map[*e];
-          if(tar<pers && flow){
-            std::cout << rev_names[tar] << " ";
-             /*std::cout << "edge from " << rev_names[tar] << " to " << rev_names[src] 
-              << " with capacity " << c_map[r_map[*e]] << " and residual capacity " << rc_map[r_map[*e]] << "\n";
-              std::cout << "flow: " << rc_map[*e] - c_map[*e] << "\n";*/
-              
+          if(tar<total_count && flow){
+            std::cout << index_to_name[tar] << " ";
           }
       }
       std::cout << "\n";
