@@ -38,7 +38,7 @@ Honig Paprika Salz
 Coke Salz Chips 
 Chips Nutella
 ```
-## Compilation
+## Setup
 
 ### Linux
 
@@ -51,6 +51,7 @@ sudo apt-get install build-essential libboost-all-dev cmake cmake-data
 ### Mac OS X / macOS
 First, install Xcode via the App Store, which includes a recent version of the LLVM C++ compiler. To install Boost use either MacPorts or Homebrew.
 
+### Compilation
 To compile the code, use the provided Makefile:
 ```bash
 make
