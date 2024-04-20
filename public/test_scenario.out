@@ -1,0 +1,75 @@
+run: 0 Allocation found!
+
+Salz: Honig Coke Schoggi 
+Paprika: Nutella Haribo 
+Chips: 
+
+run: 1 Allocation found!
+
+Chips: Haribo 
+Salz: Coke 
+Paprika: Fanta 
+Käse: Schoggi 
+
+run: 2 Allocation found!
+
+Chips: Rivella 
+Salz: Honig 
+Paprika: Haribo 
+Käse: Schoggi 
+
+run: 3 Allocation found!
+
+Chips: Honig Glace Fanta 
+Salz: Rivella Coke Haribo 
+Paprika: Nutella 
+Käse: Schoggi 
+
+run: 4 Allocation found!
+
+Chips: Schoggi Zucker Rivella 
+Salz: Coke Ovi 
+Paprika: Haribo Sugus 
+Käse: Ricola Sweet 
+Salzstange: Fanta Gummibär 
+
+run: 5 Allocation found!
+
+Chips: Haribo Fanta Gummibär Sugus 
+Salz: Zucker Ricola Rivella 
+Paprika: Schoggi Coke 
+
+run: 6 XXX - NO SOLUTION! 
+
+Chips: Coke Zucker 
+Salz: Haribo Schoggi Gummibär 
+
+run: 7 Allocation found!
+
+Chips: Coke Zucker 
+Salz: Honig Vanille Citro 
+Paprika: Ricola Rivella Ovi 
+Käse: Fanta Gummibär Sugus 
+Salzstange: Haribo Schoggi Sweet 
+
+run: 8 Allocation found!
+
+Chips: Ricola Rivella Sweet 
+Salz: Fanta Zucker Honig 
+Paprika: Haribo Schoggi Gummibär 
+Käse: Sugus Ovi 
+Salzstange: Coke 
+
+run: 9 Allocation found!
+
+Chips: Coke 
+Salz: Haribo Fanta 
+Paprika: 
+Käse: 
+Salzstange: Schoggi 
+Pfeffer: 
+Zwiback: 
+Chili: 
+Boillon: 
+Senf: Gummibär 
+

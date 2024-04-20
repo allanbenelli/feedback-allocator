@@ -44,7 +44,8 @@ class edge_adder {
 };
 
 void run(){
-    int trainer_count, participant_count, number_of_preferences, b; std::cin >> trainer_count >> participant_count >> number_of_preferences >> b;
+    int trainer_count, participant_count, number_of_preferences, number_of_nogos; 
+    std::cin >> trainer_count >> participant_count >> number_of_preferences >> number_of_nogos;
     graph G(trainer_count+participant_count);
     edge_adder adder(G);
     auto c_map = boost::get(boost::edge_capacity, G);
@@ -74,24 +75,25 @@ void run(){
       name_to_index.insert({participant_name, participant_index});
       index_to_name.push_back(participant_name);
       adder.add_edge(source, participant_index, 1, 0);
-      preference_matrix[i] = std::vector<int>(trainer_count, number_of_preferences+1); // default = lowest preference
+      preference_matrix[i] = std::vector<int>(trainer_count, INT16_MAX); // det default high = low preference
       for(int j = 1; j <= number_of_preferences; ++j){ 
         std::string preference_name;
         std::cin >> preference_name;
-        if(preference_name!="x"){
+        if(preference_name!="x"){ // no preferences = default
           int trainer_id = name_to_index[preference_name];
-          preference_matrix[i][trainer_id] = std::min(preference_matrix[i][trainer_id], j); // update preference
+          preference_matrix[i][trainer_id] = std::min(preference_matrix[i][trainer_id], j); // prefer lower preference score over default
         }
       }
     }
     // handle no-go's
-    for(int i = 0; i < b; ++i){
+    for(int i = 0; i < number_of_nogos; ++i){
       std::string trainer_name, participant_name; std::cin >> trainer_name >> participant_name;
       int participan_id = name_to_index[participant_name]-trainer_count; // für matrix
       int trainer_id = name_to_index[trainer_name];
       preference_matrix[participan_id][trainer_id] = -1;
     }
 
+    // add participant -> trainer edges, capacity = 1, weight = preference score
     for(int i = 0; i < participant_count; ++i){
       for(int j = 0; j < trainer_count; ++j){
         int preference = preference_matrix[i][j];
@@ -107,7 +109,7 @@ void run(){
     boost::find_flow_cost(G);
     out_edge_it e, eend;
     if (max_flow == participant_count) {
-      std::cout << "Optimal solution found!\n";
+      std::cout << "Allocation found!\n";
     } else {
       std::cout << "XXX - NO SOLUTION! \n";
     }
