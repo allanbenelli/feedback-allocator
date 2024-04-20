@@ -10,7 +10,7 @@ endif
 
 CXX ?= c++
 
-fname := main
+fname := feedback-allocator   # Update executable name here
 
 all: build test
 

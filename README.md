@@ -40,6 +40,17 @@ Chips Nutella
 ```
 ## Compilation
 
+### Linux
+
+Download the most recent versions of `g++`, `boost`, and `cgal` packages from your favorite package manager. On Ubuntu, for instance, run the following command:
+
+```bash
+sudo apt-get install build-essential libboost-all-dev cmake cmake-data
+```
+
+### Mac OS X / macOS
+First, install Xcode via the App Store, which includes a recent version of the LLVM C++ compiler. To install Boost use either MacPorts or Homebrew.
+
 To compile the code, use the provided Makefile:
 ```bash
 make
@@ -49,7 +60,7 @@ make
 After compilation, execute the program and provide the input through the user_test.in file. Use the following command:
 
 ```bash
-./out/main < public/user_test.in
+./out/feedback-allocator < public/user_test.in
 ```
 
 ## Output
