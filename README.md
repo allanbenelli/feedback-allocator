@@ -38,6 +38,19 @@ Honig Paprika Salz
 Coke Salz Chips 
 Chips Nutella
 ```
+
+Example input format with no preferences for some participants:
+```
+1
+3 3 2 1
+Salz 3
+Paprika 2
+Chips 1 
+Nutella x x 
+Honig Paprika Salz 
+Coke Salz x 
+Chips Nutella
+```
 ## Setup
 
 ### Linux

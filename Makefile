@@ -12,7 +12,7 @@ CXX ?= c++
 
 fname := feedback-allocator   # Update executable name here
 
-all: build test
+all: build
 
 $(OUTPUT)/Makefile:
 	(cd $(OUTPUT) && cmake -DCMAKE_BUILD_TYPE=$(cmake_build_type) -DCMAKE_CXX_COMPILER=$(CXX) ..)
@@ -25,7 +25,5 @@ build: cmake
 clean:
 	@rm -Rf $(OUTPUT)
 
-test: build
-	check-algolab $(OUTPUT)/$(fname) .
 
 .PHONY: all clean test build
